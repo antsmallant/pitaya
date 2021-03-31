@@ -156,10 +156,15 @@ func (h *HandlerService) Register(comp component.Component, opts []component.Opt
 	}
 
 	// register all handlers
+	logger.Log.Infof("----------------------------------------------")
 	h.services[s.Name] = s
 	for name, handler := range s.Handlers {
 		handlers[fmt.Sprintf("%s.%s", s.Name, name)] = handler
+
+
+		logger.Log.Infof("reg: %s.%s", s.Name, name)
 	}
+	logger.Log.Infof("----------------------------------------------")
 	return nil
 }
 
@@ -276,6 +281,8 @@ func (h *HandlerService) processMessage(a *agent.Agent, msg *message.Message) {
 	}
 	ctx = tracing.StartSpan(ctx, msg.Route, tags)
 	ctx = context.WithValue(ctx, constants.SessionCtxKey, a.Session)
+
+	logger.Log.Infof("***************, route:%v", msg.Route)
 
 	r, err := route.Decode(msg.Route)
 	if err != nil {
